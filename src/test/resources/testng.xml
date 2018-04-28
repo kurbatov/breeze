@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="MainSuite" parallel="none" thread-count="1" verbose="2" time-out="10000">
+    <test name="Clients Test">
+        <packages>
+            <!--package name="ru.velomatrix.twin.domain.*"/>
+            <package name="ru.velomatrix.twin.repository.*"/>
+            <package name="ru.velomatrix.twin.integration.*"/-->
+        </packages>
+    </test>
+</suite>
