@@ -65,8 +65,10 @@ public class ServerConfiguration {
                         ch.pipeline().addLast(new ByteToMessageDecoder() {
                             @Override
                             protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> list) throws Exception {
-                                IoTMessage message = objectMapper.readValue(new ByteBufInputStream(in), typeRefence);
-                                list.add(message);
+                                if (in.isReadable()) {
+                                    IoTMessage message = objectMapper.readValue(new ByteBufInputStream(in), typeRefence);
+                                    list.add(message);
+                                }
                             }
                         });
                         ch.pipeline().addLast(getIoTMessageHandler());

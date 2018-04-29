@@ -1,5 +1,6 @@
 package com.github.kurbatov.breeze.message;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -30,6 +31,7 @@ public class IoTMessageHandler extends ChannelInboundHandlerAdapter implements S
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         IoTMessage message = (IoTMessage) msg;
         if (!contexts.isEmpty()) {
+            //TODO devise better distribution method
             int current = idx.getAndUpdate(i -> i >= contexts.size() - 1 ? 0 : i + 1);
             contexts.get(current).collectWithTimestamp(message, message.getTimestamp());
         }
@@ -37,7 +39,16 @@ public class IoTMessageHandler extends ChannelInboundHandlerAdapter implements S
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOGGER.error("Processing IoTMessage error.", cause);
+        if (cause instanceof IOException) {
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("Connection dropped: {}", ctx.channel().remoteAddress(), cause);
+            } else {
+                LOGGER.debug("Connection dropped: {}", ctx.channel().remoteAddress());
+            }
+        } else {
+            LOGGER.error("Processing IoTMessage error.", cause);
+        }
+        ctx.close();
     }
     
     public void addContext(SourceFunction.SourceContext<IoTMessage> ctx) {

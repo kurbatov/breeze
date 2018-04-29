@@ -30,7 +30,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Import({
     ResourcesConfiguration.class,
     //SecurityConfiguration.class,
-    ServerConfiguration.class
+    ServerConfiguration.class,
+    CassandraConfiguration.class
 })
 public class ApplicationContextConfiguration implements AsyncConfigurer {
     

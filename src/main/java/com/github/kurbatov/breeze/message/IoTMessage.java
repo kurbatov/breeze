@@ -1,19 +1,28 @@
 package com.github.kurbatov.breeze.message;
 
+import com.datastax.driver.mapping.annotations.Column;
+import com.datastax.driver.mapping.annotations.Table;
+
 /**
  *
  * @author Oleg Kurbatov &lt;o.v.kurbatov@gmail.com&gt;
  */
+@Table(keyspace = "breeze", name = "iot_messages", caseSensitiveKeyspace = true, caseSensitiveTable = true)
 public class IoTMessage {
     
+    @Column
     private long timestamp;
     
+    @Column(name = "event_id")
     private long eventId;
     
+    @Column(name = "device_id")
     private String deviceId;
     
+    @Column(name = "group_id")
     private String groupId;
     
+    @Column
     private double value;
 
     public long getTimestamp() {

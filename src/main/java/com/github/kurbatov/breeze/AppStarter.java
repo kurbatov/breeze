@@ -35,8 +35,8 @@ public class AppStarter {
         int port = args.length > 2 ? Integer.parseInt(args[2]) : 0;
         long randomId = Math.round(Math.random() * 100);
         switch (mode) {
-            case "heartrate": new DeviceEmulator(new DriftingValueGenerator(mode, String.format("Person %d", randomId))).start(host, port); break;
-            case "thermostat": new DeviceEmulator(new DriftingValueGenerator(mode, String.format("Thermostat %d", randomId, randomId))).start(host, port); break;
+            case "heartrate": new DeviceEmulator(new DriftingValueGenerator(mode, String.format("Person-%d", randomId))).start(host, port); break;
+            case "thermostat": new DeviceEmulator(new DriftingValueGenerator(mode, String.format("Thermostat-%d", randomId, randomId))).start(host, port); break;
             default: start(args);
         }
     }
