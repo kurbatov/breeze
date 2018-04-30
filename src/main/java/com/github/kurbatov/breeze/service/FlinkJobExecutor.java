@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.connectors.cassandra.CassandraSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
+ * Prepares Cassandra schema and starts Flink job.
  *
  * @author Oleg Kurbatov &lt;o.v.kurbatov@gmail.com&gt;
  */
@@ -47,10 +47,9 @@ public class FlinkJobExecutor {
                 session.execute("CREATE TABLE IF NOT EXISTS breeze.iot_messages ("
                         + "group_id text,"
                         + "device_id text,"
-                        + "event_id bigint,"
                         + "timestamp bigint,"
                         + "value double,"
-                        + "PRIMARY KEY(group_id, device_id, event_id)"
+                        + "PRIMARY KEY((group_id, device_id), timestamp)"
                         + ");");
             }
             StreamExecutionEnvironment see = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -59,14 +58,6 @@ public class FlinkJobExecutor {
                 CassandraSink.addSink(source.forward())
                         .setHost(cassandraHost, cassandraPort)
                         .build();
-            } catch (Exception e) {
-                LOGGER.error("Cannot create Cassandra sink.", e);
-            }
-            source.keyBy("groupId", "deviceId")
-                    .timeWindow(Time.seconds(5), Time.seconds(1))
-                    .maxBy("value")
-                    .print();
-            try {
                 see.execute("Breeze Intake");
             } catch (Exception e) {
                 LOGGER.error("Error of a flink-job execution.", e);

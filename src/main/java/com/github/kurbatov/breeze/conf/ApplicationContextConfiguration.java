@@ -25,7 +25,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableScheduling
 @ComponentScan(
         basePackages = "com.github.kurbatov.breeze",
-        excludeFilters = @ComponentScan.Filter(pattern = "com\\.github\\.kurbatov\\.breeze\\.(conf|rest)\\..*", type = FilterType.REGEX)
+        excludeFilters = @ComponentScan.Filter(pattern = "com\\.github\\.kurbatov\\.breeze\\.(conf)\\..*", type = FilterType.REGEX)
 )
 @Import({
     ResourcesConfiguration.class,

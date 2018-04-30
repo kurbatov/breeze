@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Emulates IoT device sending data to a specified server.
  *
  * @author Oleg Kurbatov &lt;o.v.kurbatov@gmail.com&gt;
  */
@@ -57,7 +58,7 @@ public class DeviceEmulator {
                                     byte[] msg = objectMapper.writeValueAsBytes(messageProvider.getNextMessage());
                                     ByteBuf buffer = ctx.alloc().buffer(msg.length + 1).writeBytes(msg).writeChar('\n');
                                     ctx.writeAndFlush(buffer);
-                                    LOGGER.debug("{}\n", new String(msg));
+                                    System.out.println(String.format("%s\n", new String(msg)));
                                     Thread.sleep(1000);
                                 } catch (JsonProcessingException e) {
                                     LOGGER.error("Cannot serialize a message.", e);

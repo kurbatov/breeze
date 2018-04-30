@@ -4,6 +4,7 @@ import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.Table;
 
 /**
+ * A message from IoT device.
  *
  * @author Oleg Kurbatov &lt;o.v.kurbatov@gmail.com&gt;
  */
@@ -12,9 +13,6 @@ public class IoTMessage {
     
     @Column
     private long timestamp;
-    
-    @Column(name = "event_id")
-    private long eventId;
     
     @Column(name = "device_id")
     private String deviceId;
@@ -31,14 +29,6 @@ public class IoTMessage {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public long getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(long eventId) {
-        this.eventId = eventId;
     }
 
     public String getDeviceId() {

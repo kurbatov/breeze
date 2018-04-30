@@ -1,7 +1,6 @@
 package com.github.kurbatov.breeze.device;
 
 import com.github.kurbatov.breeze.message.IoTMessage;
-import java.util.UUID;
 
 /**
  *
@@ -31,8 +30,7 @@ public class DriftingValueGenerator implements IoTMessageGenerator {
         msg.setTimestamp(System.currentTimeMillis());
         msg.setDeviceId(deviceId);
         msg.setGroupId(groupId);
-        msg.setEventId(UUID.randomUUID().getLeastSignificantBits());
-        msg.setValue(currentValue += Math.round(Math.random() * 10) - 5);
+        msg.setValue(currentValue += (Math.round(Math.random() * 10) - 5));
         return msg;
     }
     

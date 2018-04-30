@@ -1,6 +1,7 @@
 package com.github.kurbatov.breeze;
 
 import com.github.kurbatov.breeze.conf.ApplicationContextConfiguration;
+import com.github.kurbatov.breeze.device.DecreasingValueGenerator;
 import com.github.kurbatov.breeze.device.DeviceEmulator;
 import com.github.kurbatov.breeze.device.DriftingValueGenerator;
 import java.util.Arrays;
@@ -32,12 +33,14 @@ public class AppStarter {
         SLF4JBridgeHandler.install();
         String mode = args.length > 0 ? args[0] : "";
         String host = args.length > 1 ? args[1] : "";
-        int port = args.length > 2 ? Integer.parseInt(args[2]) : 0;
+        int port = args.length > 2 ? Integer.parseInt(args[2]) : 9909;
         long randomId = Math.round(Math.random() * 100);
         switch (mode) {
             case "heartrate": new DeviceEmulator(new DriftingValueGenerator(mode, String.format("Person-%d", randomId))).start(host, port); break;
-            case "thermostat": new DeviceEmulator(new DriftingValueGenerator(mode, String.format("Thermostat-%d", randomId, randomId))).start(host, port); break;
-            default: start(args);
+            case "thermostat": new DeviceEmulator(new DriftingValueGenerator(mode, String.format("Thermostat-%d", randomId), randomId)).start(host, port); break;
+            case "fuel": new DeviceEmulator(new DecreasingValueGenerator(mode, String.format("FuelGauge-%d", randomId))).start(host, port); break;
+            case "": start(args); break;
+            default: printUsage();
         }
     }
     
@@ -105,6 +108,19 @@ public class AppStarter {
 
     private static void finish() {
         FINALISATION_LATCH.countDown();
+    }
+    
+    private static void printUsage() {
+        String usage = "Usage:\n\n"
+                + "java -jar breeze-<version>.jar[ <mode> <host>[ <port>]]\n\n"
+                + "Starts the server when mode is not specified.\n\n"
+                + "When mode is specified, starts a simulation of IoT device in specified mode.\n"
+                + "The simulation sends messages to the server on specified host and port (9909 by default).\n\n"
+                + "Supported modes:\n\n"
+                + "\theartrate\n"
+                + "\tthermostat\n"
+                + "\tfuel\n";
+        System.out.println(usage);
     }
 
 }

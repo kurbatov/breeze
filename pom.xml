@@ -38,22 +38,17 @@
         <project.generated.directory>${project.build.directory}/generated-sources</project.generated.directory>
         <spring.version>5.0.5.RELEASE</spring.version>
         <spring.security.version>5.0.4.RELEASE</spring.security.version>
-        <flink.version>1.4.2</flink.version>
-        <scala.binary.version>2.11</scala.binary.version>
         <reactor.version>3.1.6.RELEASE</reactor.version>
         <cglib.version>3.2.6</cglib.version>
+        <jackson.version>2.9.4</jackson.version>
+        <flink.version>1.4.2</flink.version>
+        <scala.binary.version>2.11</scala.binary.version>
         <slf4j.version>1.7.25</slf4j.version>
         <log4j.version>2.9.1</log4j.version>
         <testng.version>6.10</testng.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>5.4.0.CR1</version>
-        </dependency>
-
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -62,6 +57,10 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -73,11 +72,28 @@
             <artifactId>spring-security-config</artifactId>
             <version>${spring.security.version}</version>
         </dependency>
-
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>${cglib.version}</version>
+        </dependency>
+        
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>${reactor.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor.ipc</groupId>
+            <artifactId>reactor-netty</artifactId>
+            <version>0.7.6.RELEASE</version>
         </dependency>
         
         <!-- Apache Flink dependencies -->
@@ -117,13 +133,6 @@
             <optional>true</optional>
         </dependency>-->
 
-
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
-            <version>${reactor.version}</version>
-        </dependency>
-        
         <!-- logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -352,6 +361,11 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>reference.conf</resource>
+                                </transformer>
+                            </transformers>
                             <shadeTestJar>false</shadeTestJar>
                             <artifactSet>
                                 <excludes>

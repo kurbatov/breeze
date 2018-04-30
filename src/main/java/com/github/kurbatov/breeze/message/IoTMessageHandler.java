@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Netty handler that dispatches received {@link IoTMessage}s to the registered
+ * Flink job contexts.
  *
  * @author Oleg Kurbatov &lt;o.v.kurbatov@gmail.com&gt;
  */
@@ -20,13 +22,13 @@ import org.slf4j.LoggerFactory;
 public class IoTMessageHandler extends ChannelInboundHandlerAdapter implements Serializable {
 
     private final List<SourceFunction.SourceContext<IoTMessage>> contexts = new CopyOnWriteArrayList<>();
-    
+
     private final AtomicInteger idx = new AtomicInteger();
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(IoTMessageHandler.class);
-    
+
     private static final long serialVersionUID = -9097649975248916124L;
-    
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         IoTMessage message = (IoTMessage) msg;
@@ -50,14 +52,14 @@ public class IoTMessageHandler extends ChannelInboundHandlerAdapter implements S
         }
         ctx.close();
     }
-    
+
     public void addContext(SourceFunction.SourceContext<IoTMessage> ctx) {
         contexts.add(ctx);
     }
-    
+
     public void removeContext(SourceFunction.SourceContext<IoTMessage> ctx) {
         idx.set(0);
         contexts.remove(ctx);
     }
-    
+
 }

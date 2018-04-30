@@ -6,13 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Data source that provide stream of {@link IoTMessage}s to a Flink job.
  *
  * @author Oleg Kurbatov &lt;o.v.kurbatov@gmail.com&gt;
  */
 public class IoTMessageSource extends RichParallelSourceFunction<IoTMessage> {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(IoTMessageSource.class);
-    
+
     private static final long serialVersionUID = 5602468920963665151L;
 
     @Override
@@ -20,7 +21,7 @@ public class IoTMessageSource extends RichParallelSourceFunction<IoTMessage> {
         IoTMessageHandler handler = AppStarter.getContext().getBean(IoTMessageHandler.class);
         ctx.markAsTemporarilyIdle();
         handler.addContext(ctx);
-        wait();
+        wait(); //should hang here or flink finishes the job
         handler.removeContext(ctx);
     }
 
